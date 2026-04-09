@@ -188,7 +188,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('sample.jpg');
+            background-image: url('image1.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -928,57 +928,89 @@
         .ent-parents-row {
             display: flex;
             justify-content: center;
-            gap: 50px;
+            gap: 70px;
             margin-bottom: 60px;
             flex-wrap: wrap;
         }
 
         .ent-parent-card {
             text-align: center;
-            max-width: 180px;
+            width: 200px;
         }
 
+        /* The circle */
         .ent-parent-photo {
-            width: 120px; height: 120px;
+            width: 185px;
+            height: 185px;
             border-radius: 50%;
             overflow: hidden;
-            margin: 0 auto 16px;
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 0 6px rgba(181,149,106,0.12);
-            transition: box-shadow 0.3s;
+            margin: 0 auto 20px;
+            position: relative;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            /* warm golden glow — matches the reference photo exactly */
+            background: radial-gradient(circle at 42% 32%,
+                #FEFAE8 0%,
+                #F5E8B0 22%,
+                #E0C870 45%,
+                #C4A040 65%,
+                #8B6810 85%,
+                #5C420A 100%
+            );
+            /* outer gold ring + double halo */
+            border: 2.5px solid #C9A84C;
+            box-shadow:
+                0 0 0 5px rgba(201,168,76,0.18),
+                0 0 0 10px rgba(201,168,76,0.08),
+                0 10px 35px rgba(0,0,0,0.18);
         }
 
         .ent-parent-photo:hover {
-            box-shadow: 0 0 0 8px rgba(181,149,106,0.25);
+            transform: scale(1.06);
+            box-shadow:
+                0 0 0 6px rgba(201,168,76,0.32),
+                0 0 0 12px rgba(201,168,76,0.14),
+                0 14px 45px rgba(0,0,0,0.22);
         }
 
-        .ent-parent-photo img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            filter: sepia(15%);
+        /* The SVG fills the circle */
+        .ent-silhouette {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .ent-silhouette svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         .ent-role {
             font-family: 'Cinzel', serif;
-            font-size: 0.58rem;
-            letter-spacing: 4px;
-            color: var(--gold-dark);
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            color: var(--ink);
             margin-bottom: 2px;
+            font-weight: 400;
+            line-height: 1.2;
         }
 
         .ent-subrole {
             font-family: 'Tangerine', cursive;
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-weight: 700;
-            color: var(--sage);
-            margin-bottom: 6px;
+            color: var(--ink-light);
+            margin-bottom: 10px;
+            line-height: 1.1;
         }
 
         .ent-names {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 0.82rem;
+            font-size: 0.88rem;
             color: #666;
-            line-height: 1.8;
+            line-height: 1.9;
             font-style: italic;
         }
 
@@ -1172,47 +1204,98 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 4px;
+            grid-template-columns: 1.45fr 1fr;
+            grid-template-rows: 1fr 1fr auto;
+            gap: 5px;
             margin-top: 40px;
         }
 
-        .gallery-item {
+        /* Big left — spans rows 1+2 */
+        .gallery-item-big {
+            grid-column: 1;
+            grid-row: 1 / 3;
             overflow: hidden;
-            aspect-ratio: 1;
             position: relative;
         }
 
-        .gallery-item:first-child {
-            grid-column: span 2;
-            grid-row: span 2;
-            aspect-ratio: auto;
+        /* Right top */
+        .gallery-item-rt {
+            grid-column: 2;
+            grid-row: 1;
+            overflow: hidden;
+            position: relative;
         }
 
-        .gallery-item img {
+        /* Right bottom */
+        .gallery-item-rb {
+            grid-column: 2;
+            grid-row: 2;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Bottom row — spans both columns, 3 equal cells */
+        .gallery-row-bottom {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .gallery-row-bottom .gallery-item-sm {
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 1 / 1;
+        }
+
+        /* Shared img styles */
+        .gallery-item-big img,
+        .gallery-item-rt img,
+        .gallery-item-rb img,
+        .gallery-item-sm img {
             width: 100%; height: 100%;
             object-fit: cover;
-            filter: sepia(15%) contrast(1.02);
-            transition: transform 0.6s ease, filter 0.4s;
             display: block;
+            filter: sepia(12%) contrast(1.02);
+            transition: transform 0.6s ease, filter 0.4s;
         }
 
-        .gallery-item:hover img {
-            transform: scale(1.08);
+        .gallery-item-big:hover img,
+        .gallery-item-rt:hover img,
+        .gallery-item-rb:hover img,
+        .gallery-item-sm:hover img {
+            transform: scale(1.06);
             filter: sepia(0%) contrast(1.05);
         }
 
-        .gallery-item::after {
+        /* Gold border overlay on hover */
+        .gallery-item-big::after,
+        .gallery-item-rt::after,
+        .gallery-item-rb::after,
+        .gallery-item-sm::after {
             content: '';
             position: absolute;
             inset: 0;
-            border: 1px solid rgba(181,149,106,0.2);
+            border: 1px solid rgba(181,149,106,0.15);
             pointer-events: none;
             transition: border-color 0.3s;
+            z-index: 1;
         }
 
-        .gallery-item:hover::after {
+        .gallery-item-big:hover::after,
+        .gallery-item-rt:hover::after,
+        .gallery-item-rb:hover::after,
+        .gallery-item-sm:hover::after {
             border-color: rgba(181,149,106,0.6);
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid { grid-template-columns: 1fr; grid-template-rows: auto; gap: 4px; }
+            .gallery-item-big { grid-column: 1; grid-row: auto; aspect-ratio: 4/3; }
+            .gallery-item-rt { grid-column: 1; grid-row: auto; aspect-ratio: 4/3; }
+            .gallery-item-rb { grid-column: 1; grid-row: auto; aspect-ratio: 4/3; }
+            .gallery-row-bottom { grid-column: 1; grid-row: auto; grid-template-columns: 1fr 1fr; }
         }
 
         /* ============ FAQ ============ */
@@ -1374,9 +1457,10 @@
             .ent-honor-divider { display: none; }
             .program-grid { grid-template-columns: 1fr; }
             .program-col:first-child { border-right: none; border-bottom: 1px solid rgba(181,149,106,0.2); }
-            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-            .gallery-item:first-child { grid-column: span 2; aspect-ratio: 16/9; }
+            /* gallery responsive handled in gallery CSS block */
             .ent-parents-row { gap: 30px; }
+            .ent-parent-card { width: 155px; }
+            .ent-parent-photo { width: 140px; height: 140px; }
             .dresscode-attire-row { flex-direction: column; }
             .dresscode-attire-card + .dresscode-attire-card { border-left: none; border-top: 1px solid rgba(181,149,106,0.2); }
             .dresscode-colors-wrap { padding: 24px 20px; }
@@ -1945,15 +2029,15 @@
             </svg>
         </div>
         <div class="hero-names reveal reveal-delay-2">
-            Marjory Domingo
+            Marjory
             <span class="hero-et">et</span>
-            James Hernandez
+            James
         </div>
         <p class="hero-subtitle reveal reveal-delay-3">— WEDDING CELEBRATION —</p>
         <p class="hero-invite-text reveal reveal-delay-3">Together with their families, joyfully invite you to witness the union of their hearts and souls</p>
 
         <div class="hero-img-wrap reveal">
-            <img src="sample.jpg" alt="Marjory Domingo & James Hernandez" class="hero-img">
+            <img src="image6.jpg" alt="Marjory Domingo & James Hernandez" class="hero-img">
         </div>
     </div>
 
@@ -1992,7 +2076,7 @@
                 <div class="section-title-roman" style="font-size:1.4rem">Play Our Favourite Song</div>
             </div>
             <div class="spotify-wrap">
-                <iframe style="border-radius:0; display:block;" src="https://open.spotify.com/embed/track/3Z66zXvY9Cq5zY5Yv5zY5Y?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe style="border-radius:0; display:block;" src="https://open.spotify.com/embed/track/3QUQhiADLGdEWnoXKPCKaE?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
         </div>
 
@@ -2088,33 +2172,20 @@
                 </div>
                 <div class="ls-content-right">
                     <p class="ls-event-name">We Met</p>
-                    <p class="ls-event-date">May 2023</p>
+                    <p class="ls-event-date">March 3, 2019</p>
                 </div>
             </div>
-            <!-- First Date -->
+            <!-- Naging Sila -->
             <div class="ls-item right">
                 <div class="ls-content-left">
-                    <p class="ls-event-name">First Date</p>
-                    <p class="ls-event-date">July 2023</p>
+                    <p class="ls-event-name">Became a Couple</p>
+                    <p class="ls-event-date">July 24, 2023</p>
                 </div>
                 <div class="ls-center">
                     <div class="ls-dot"></div>
                 </div>
                 <div class="ls-photo-wrap">
-                    <img src="sample.jpg" alt="First Date">
-                </div>
-            </div>
-            <!-- Said I Love You -->
-            <div class="ls-item">
-                <div class="ls-photo-wrap">
-                    <img src="sample.jpg" alt="Said I love you">
-                </div>
-                <div class="ls-center">
-                    <div class="ls-dot"></div>
-                </div>
-                <div class="ls-content-right">
-                    <p class="ls-event-name">Said I Love You</p>
-                    <p class="ls-event-date">January 28, 2024</p>
+                    <img src="sample.jpg" alt="Became a Couple">
                 </div>
             </div>
         </div>
@@ -2193,24 +2264,33 @@
             <div class="section-script-title" style="font-size:4rem; margin-top:4px;">Entourage</div>
         </div>
 
-        <!-- Officiant & Parents -->
+        <!-- Groom & Bride circles -->
         <div class="ent-parents-row" style="margin-top:50px;">
+
+            <!-- GROOM CIRCLE: groom on left facing right, bride on right facing left, bouquet center -->
             <div class="ent-parent-card">
                 <div class="ent-parent-photo">
-                    <img src="sample.jpg" alt="Groom">
+                    <div class="ent-silhouette">
+                        <img src="groom.jpg" alt="Groom" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
                 </div>
                 <p class="ent-role">GROOM</p>
-                <p class="ent-subrole"></p>
+                <p class="ent-subrole">of the Wedding</p>
                 <p class="ent-names">Mr. James J. Hernandez</p>
             </div>
+
+            <!-- BRIDE CIRCLE: mirrored — bride on right prominent, groom on left -->
             <div class="ent-parent-card">
                 <div class="ent-parent-photo">
-                    <img src="sample.jpg" alt="Bride">
+                    <div class="ent-silhouette">
+                        <img src="bride.jpg" alt="Bride" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
                 </div>
                 <p class="ent-role">BRIDE</p>
-                <p class="ent-subrole"></p>
+                <p class="ent-subrole">of the Wedding</p>
                 <p class="ent-names">Ms. Marjory A. Domingo</p>
             </div>
+
         </div>
 
         <div class="ent-block-divider"><span></span><i></i><span></span></div>
@@ -2311,16 +2391,16 @@
                         <svg width="32" height="72" viewBox="0 0 36 80"><path d="M10 8 Q18 2 26 8 L30 20 L26 22 L24 16 L24 78 L12 78 L12 16 L10 22 L6 20 Z" fill="none" stroke="#B5956A" stroke-width="1.2"/></svg>
                         <svg width="32" height="72" viewBox="0 0 36 80"><path d="M12 8 Q18 2 24 8 L28 20 L24 22 L22 16 L22 50 Q22 56 18 56 Q14 56 14 50 L14 16 L12 22 L8 20 Z" fill="none" stroke="#B5956A" stroke-width="1.2"/><rect x="10" y="50" width="16" height="28" rx="2" fill="none" stroke="#B5956A" stroke-width="1.2"/></svg>
                     </div>
-                    <p class="dresscode-attire-label">For Ladies</p>
-                    <p class="dresscode-attire-detail">Formal gown · Semi-formal dress<br>Smart casual attire</p>
+                    <p class="dresscode-attire-label">FEMALE</p>
+                    <p class="dresscode-attire-detail">Knee-length dress · Jumpsuit · Skirt & Blouse</p>
                 </div>
                 <div class="dresscode-attire-card">
                     <div class="dresscode-attire-icons">
                         <svg width="32" height="72" viewBox="0 0 36 80"><rect x="8" y="2" width="20" height="26" rx="2" fill="none" stroke="#B5956A" stroke-width="1.2"/><path d="M8 28 L4 78 L32 78 L28 28Z" fill="none" stroke="#B5956A" stroke-width="1.2"/><line x1="18" y1="2" x2="18" y2="28" stroke="#B5956A" stroke-width="1.2"/></svg>
                         <svg width="32" height="72" viewBox="0 0 36 80"><path d="M12 2 Q18 0 24 2 L28 14 L24 16 L22 10 L22 78 L14 78 L14 10 L12 16 L8 14 Z" fill="none" stroke="#B5956A" stroke-width="1.2"/></svg>
                     </div>
-                    <p class="dresscode-attire-label">For Gentlemen</p>
-                    <p class="dresscode-attire-detail">Suit &amp; tie · Barong Tagalog<br>Smart casual shirt &amp; trousers</p>
+                    <p class="dresscode-attire-label">MALE</p>
+                    <p class="dresscode-attire-detail">Sports coat & pants · Button-up, bowtie & pants · Suit & Tie</p>
                 </div>
             </div>
 
@@ -2354,23 +2434,29 @@
                 <div class="section-title-roman">Our Gallery</div>
             </div>
             <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="sample.jpg" alt="Gallery 1">
+                <!-- Big left — spans 2 rows -->
+                <div class="gallery-item-big">
+                    <img src="image7.jpg" alt="Gallery 1">
                 </div>
-                <div class="gallery-item">
-                    <img src="sample.jpg" alt="Gallery 2">
+                <!-- Right top -->
+                <div class="gallery-item-rt">
+                    <img src="image9.jpg" alt="Gallery 2">
                 </div>
-                <div class="gallery-item">
-                    <img src="sample.jpg" alt="Gallery 3">
+                <!-- Right bottom -->
+                <div class="gallery-item-rb">
+                    <img src="image8.jpg" alt="Gallery 3">
                 </div>
-                <div class="gallery-item">
-                    <img src="sample.jpg" alt="Gallery 4">
-                </div>
-                <div class="gallery-item">
-                    <img src="sample.jpg" alt="Gallery 5">
-                </div>
-                <div class="gallery-item">
-                    <img src="sample.jpg" alt="Gallery 6">
+                <!-- Bottom row — 3 equal -->
+                <div class="gallery-row-bottom">
+                    <div class="gallery-item-sm">
+                        <img src="image5.jpg" alt="Gallery 4">
+                    </div>
+                    <div class="gallery-item-sm">
+                        <img src="image4.jpg" alt="Gallery 5">
+                    </div>
+                    <div class="gallery-item-sm">
+                        <img src="image3.jpg" alt="Gallery 6">
+                    </div>
                 </div>
             </div>
         </div>
